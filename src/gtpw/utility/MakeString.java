@@ -17,32 +17,32 @@ public class MakeString {
     ArrayList<String>adjDataList;
     ArrayList<String>adjList;
     ArrayList<CellObj>cellObjList;
-    
+    String filePath;
     Random rnd;
     
-    public MakeString(ArrayList<CellObj>cellobjli_){
+    public MakeString(ArrayList<CellObj>cellobjli_, String filepath_){
     //public MakeString(ArrayList<CellObj>cellobjli_,ArrayList<String>objLi_, ArrayList<String>adjLi_ ){
         rnd=new Random();
-        dataClass=new DataClass();
+        filePath=filepath_;
+        dataClass=new DataClass(filePath);
         objList=new ArrayList<String>();
         adjDataList=new ArrayList<String>();
         adjList=new ArrayList<String>();
         cellObjList=new ArrayList<CellObj>();
-        cellObjList.addAll(cellobjli_);
-        
-        //objList.addAll(objLi_);
-        //adjList.addAll(adjLi_);
-        
-        
+
+        objList.clear();
+        adjDataList.clear();
+        cellObjList.clear();
+
         objList.addAll(dataClass.getObjList());        
         adjDataList.addAll(dataClass.getAdjDataList());        
         adjList.addAll(dataClass.getAdjList());  
-        
-        
         Collections.sort(adjList, new CompareIndex2());
+        cellObjList.addAll(cellobjli_);
     }
     
-    public String initProcess(){
+    public String initProcess(){        
+        Collections.sort(adjList, new CompareIndex2());
         String iniString="";//iniString is the string with names;
         for(int i=0; i<objList.size(); i++){
             String name=objList.get(i).split(";")[1];
@@ -52,8 +52,7 @@ public class MakeString {
                 iniString+=name+",";
                 
             }
-        }        
-        
+        }                
         return iniString;
     }
 
@@ -82,7 +81,7 @@ public class MakeString {
         return cellObjList;
     }
 
-    public double getFitness(){
+    public double getFitness(){       
         double sum=0;
         for(int i=0; i<cellObjList.size(); i++){
             CellObj cell1=cellObjList.get(i);
@@ -91,6 +90,7 @@ public class MakeString {
                 if( Math.abs(i-j)>0){
                     String u=cell1.getName();
                     String v=cell2.getName();
+                    //System.out.println( u+ "," +v);
                     double w=retAdjVal(u,v);
                     double d=dis(cell1, cell2);
                     sum+=w*d;

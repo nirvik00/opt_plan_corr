@@ -18,8 +18,9 @@ import javax.swing.JPanel;
  *
  * @author Nirvik Saha
  */
-public class GTPW_revOpt_Pnl extends JPanel implements MouseListener{
-    double Depth_Max=500;
+public class GTPW_revOpt_Pnl extends JPanel implements MouseListener{   
+    String FilePath;
+    double Depth_Max;
     DataClass dataClass;
     MakeString makeStringClass;
     Fitness fitnessClass;
@@ -38,9 +39,8 @@ public class GTPW_revOpt_Pnl extends JPanel implements MouseListener{
     int ClickCounter=0;
     int numOfiterations=0;
     
-    GTPW_revOpt_Pnl(){
-        addMouseListener(this);
-        
+    public GTPW_revOpt_Pnl(){
+        addMouseListener(this);       
         
         cellList=new ArrayList<String>();
         cellObjList=new ArrayList<CellObj>();
@@ -49,22 +49,53 @@ public class GTPW_revOpt_Pnl extends JPanel implements MouseListener{
         adjList=new ArrayList<String>();
         adjDataList=new ArrayList<String>();
         
-        dataClass=new DataClass();
-        objList.addAll(dataClass.getObjList());
-        adjDataList.addAll(dataClass.getAdjDataList());
-        adjList.addAll(dataClass.getAdjList());
-        
-        
         prodObjList=new ArrayList<ProductObj>();
-        
-        initData();
-        initSimulatedAnnealing();
+        //initData();
+        //initSimulatedAnnealing();
     }
     
-    public void initData(){
+    public GTPW_revOpt_Pnl(String filepath_, double corr_depth_){
+        Depth_Max=corr_depth_;
+        FilePath=filepath_;
+        dataClass=new DataClass(FilePath);    
+        addMouseListener(this);       
+        
+        cellList=new ArrayList<String>();
+        cellObjList=new ArrayList<CellObj>();
+                
+        objList=new ArrayList<String>();
+        adjList=new ArrayList<String>();
+        adjDataList=new ArrayList<String>();
+        
+        prodObjList=new ArrayList<ProductObj>();
+    }
+    
+    public void clear(){
+        currentString="";
+        currentFitness=0;
+        ClickCounter=0;
+        numOfiterations=0;
+        objList.clear();
+        adjDataList.clear();
+        adjList.clear();
+        cellObjList.clear();
+    }
+    
+    public void initData(String filepath_, double corr_depth_){
         /*
         *   CONSTRUCT INITIAL CELLS 
         */
+        Depth_Max=corr_depth_;
+        FilePath=filepath_;
+        dataClass=new DataClass(FilePath);
+        
+        objList.clear();
+        adjDataList.clear();
+        adjList.clear();
+        
+        objList.addAll(dataClass.getObjList());
+        adjDataList.addAll(dataClass.getAdjDataList());
+        adjList.addAll(dataClass.getAdjList());
         
         double sum=0;
         for(int i=0; i<objList.size(); i++){
@@ -72,9 +103,7 @@ public class GTPW_revOpt_Pnl extends JPanel implements MouseListener{
             sum+=x;
         }
         int ite=(int)(400/(sum/2));
-        System.out.println(ite);
         int k=0;
-        
         for(int i=0; i<(int)(sum/2); i++){
             int[] colr={255,255,255};
             int diff=(400/((int)sum/2));
@@ -89,13 +118,13 @@ public class GTPW_revOpt_Pnl extends JPanel implements MouseListener{
         */
     }
     
-    public void initSimulatedAnnealing(){
-        //makeStringClass=new MakeString(cellObjList,objList,adjList);
-        makeStringClass=new MakeString(cellObjList);
+    public void initSimulatedAnnealing(String filePath){        
+        makeStringClass=new MakeString(cellObjList, filePath);
         String u=makeStringClass.initProcess();
         currentString=u;
         cellObjList.clear();
         cellObjList.addAll(makeStringClass.constructBoard(u));
+        System.out.println("pnl - "+currentString);
         double f=makeStringClass.getFitness();
         currentFitness=f;
         if(currentFitness!=0){
@@ -104,7 +133,7 @@ public class GTPW_revOpt_Pnl extends JPanel implements MouseListener{
         }
     }
     
-    public void runIter(){
+    public void runIter(String filePath){
         String prevString=currentString;
         String tempString=currentString;
         boolean t=false;
@@ -221,6 +250,7 @@ public class GTPW_revOpt_Pnl extends JPanel implements MouseListener{
                 }
             }
         }
+        
         g2d.translate(-tX_b,-tY_b);
         g2d.drawString("OPTIMIZING ADJACENCY", 50,200);
         g2d.drawString("OPTIMIZING AREA (OVERALL SOLUTION)", 50,550);

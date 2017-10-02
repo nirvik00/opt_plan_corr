@@ -14,12 +14,13 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
  * @author Nirvik Saha
  */
 public class DataClass {
-    
+    String filePath;
     ArrayList<String>objList;
     ArrayList<String>adjDataList;
     ArrayList<String>adjList;
     
-    public DataClass(){
+    public DataClass(String path){
+        filePath=path;
         objList=new ArrayList<String>();
         adjDataList=new ArrayList<String>();
         adjList=new ArrayList<String>();
@@ -86,7 +87,7 @@ public class DataClass {
         ArrayList<String>objDataList=new ArrayList<String>();
         try{
             //FileInputStream file=new FileInputStream(new File("C:\\Users\\Nirvik Saha\\Documents\\NetBeansProjects\\GTPW_revOpt\\Book1.xlsx"));
-            FileInputStream file=new FileInputStream(new File("Book1.xlsx"));
+            FileInputStream file=new FileInputStream(new File(filePath));
             XSSFWorkbook wb1=new XSSFWorkbook(file);
             XSSFSheet sheet1=wb1.getSheet("Adjacency");
             Iterator<Row> rowIterator=sheet1.iterator();
@@ -124,7 +125,7 @@ public class DataClass {
         ArrayList<String>tempObjDataList=new ArrayList<String>();
         try{
             //FileInputStream file=new FileInputStream(new File("C:\\Users\\Nirvik Saha\\Documents\\NetBeansProjects\\GTPW_revOpt\\Book1.xlsx"));
-            FileInputStream file=new FileInputStream(new File("Book1.xlsx"));
+            FileInputStream file=new FileInputStream(new File(filePath));
             XSSFWorkbook wb1=new XSSFWorkbook(file);
             XSSFSheet sheet1=wb1.getSheet("Object");
             Iterator<Row> rowIterator=sheet1.iterator();
